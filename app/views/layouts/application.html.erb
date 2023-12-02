@@ -11,17 +11,13 @@
   </head>
 
   <body>
-    <header>
-      <%= image_tag("logo.png")%>
-    </header>
+    <%= render "layouts/header" %>
 
     <div class="content">
+      <%= render "layouts/flash" %>
       <%= yield %>
     </div>
 
-    <footer>
-      Copyright &copy; <%= Time.now.year %>
-      <%= link_to "Kavu16 @ Deepwater Software", "https://github.com/kavu16" %>
-    </footer>
+    <%= render "layouts/footer" %>
   </body>
 </html>
