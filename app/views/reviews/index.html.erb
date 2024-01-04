@@ -2,9 +2,13 @@
 <ul class="reviews">
     <% @reviews.each do |review| %>
         <li>
+            <%= profile_image(review.user, 35) %>
+            <% if review.user.username.present? %>
+                <%= link_to review.user.username, review.user %>
+            <% end %>
             <%= render "shared/stars", percent: review.stars_as_percent %>
             <p>
-                <%= review.name %>
+                <%= link_to review.user.name, review.user %>
                 <span class="date">
                     <%= time_ago_in_words(review.created_at) %> ago
                 </span>
@@ -12,11 +16,15 @@
             <p>
                 <%= review.comment %>
             </p>
-            <p>
-                <%= link_to "Edit", edit_movie_review_path(id: review.id), class: "button" %>
-                <%= link_to "Delete", movie_review_path(id: review.id), class: "button",
-                        data: { turbo_method: :delete, turbo_confirm: "Are you sure?" } %>
-            </p>
+            <% if current_user?(review.user) || current_user_admin? %>
+                <p>
+                    <% if current_user?(review.user)%>
+                        <%= link_to "Edit", edit_movie_review_path(id: review.id), class: "button" %>
+                    <% end %>
+                    <%= link_to "Delete", movie_review_path(id: review.id), class: "button",
+                            data: { turbo_method: :delete, turbo_confirm: "Are you sure?" } %>
+                </p>
+            <% end %>
         </li>
     <% end %>
 </ul>
