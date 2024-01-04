@@ -138,3 +138,6 @@ Movie.create!([
     total_gross: 821_847_012
   }
 ])
+
+genres = ["Action", "Comedy", "Drama", "Romance", "Thriller", "Fantasy", "Documentary", "Adventure", "Animation", "Sci-Fi"]
+genres.each { |genre| Genre.create(name: genre) }

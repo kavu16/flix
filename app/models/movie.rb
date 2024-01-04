@@ -1,9 +1,12 @@
 class Movie < ApplicationRecord
-  has_many :reviews, dependent: :destroy
+  has_many :reviews, -> { order(created_at: :desc) }, dependent: :destroy
   has_many :critics, through: :reviews, source: :user
 
   has_many :favorites, dependent: :destroy
   has_many :fans, through: :favorites, source: :user
+
+  has_many :characterizations, dependent: :destroy
+  has_many :genres, through: :characterizations
 
   validates :title, :released_on, :duration, presence: true
 
@@ -20,9 +23,11 @@ class Movie < ApplicationRecord
 
   validates :rating, inclusion: { in: RATINGS }
 
-  def self.released
-    where("released_on < ?", Time.now).order("released_on desc")
-  end
+  scope :released, -> { where("released_on < ?", Time.now).order("released_on desc") }
+  scope :upcoming, -> { where("released_on > ?", Time.now).order("released_on asc") }
+  scope :recent, -> (max=5) { released.limit(max) }
+  scope :hits, -> { released.where("total_gross >= 300000000").order(total_gross: :desc) }
+  scope :flops, -> { released.where("total_gross < 225000000").order(total_gross: :asc) }
 
   def flop?
     unless (reviews.count > 50 && average_stars >= 4)
